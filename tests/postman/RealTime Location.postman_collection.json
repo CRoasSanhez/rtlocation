@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "a6080429-7348-21b5-301e-1e6497912a40",
+		"name": "RealTime Location",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "vehicle register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"// Test Return data on success",
+							"pm.test(\"/vehicle/register returns http code 200 for a success operation\",function(){",
+							"    pm.expect(pm.response).to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"mark\":\"test\",\n   \"driver_name\":\"test\",\n   \"car_type\":\"test\",\n   \"geolocation\": {\n    \"type\": \"Point\",\n    \"coordinates\": [ -99.16378, 19.410272 ]\n  }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:1337/vehicle/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"vehicle",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vehicle Get vehicles",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c33d4fa6-2176-4fc8-ba7f-1ccb15ea7a66",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"/vehicle/vehicles returns a list of vehicles according to the given coordinates\",function(){",
+							"    pm.expect(pm.response).to.have.status(200);",
+							"    pm.expect(pm.response.json().length).to.be.above(0);",
+							"})",
+							"",
+							"// Test Return response code 200",
+							"pm.test(\"/vehicle/vehicles Returned response code 200\",function(){",
+							"    var resultShcema  = ",
+							"    {",
+							"      \"type\": \"object\",",
+							"      \"properties\": {",
+							"        \"id\": { \"type\": \"string\" },",
+							"        \"mark\": { \"type\": \"string\" },",
+							"        \"driver_name\": { \"type\": \"string\" },",
+							"        \"car_type\": { \"type\": \"string\" },",
+							"        \"geolocation\": { \"type\": \"object\",",
+							"          \"properties\": {",
+							"            \"type\": { \"type\": \"string\" },",
+							"            \"coordinates\": {",
+							"              \"type\": \"array\",",
+							"              \"items\": [ { \"type\": \"number\" }, { \"type\": \"number\" } ]",
+							"            }",
+							"          },",
+							"          \"required\": [ \"type\", \"coordinates\" ]",
+							"        }",
+							"      },",
+							"      \"required\": [ \"id\", \"mark\", \"driver_name\", \"car_type\", \"geolocation\" ]",
+							"    };",
+							"    pm.expect(tv4.validate(pm.response.json()[0], resultShcema, false, true)).to.be.true;",
+							"    ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "",
+						"value": ""
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:1337/vehicle/vehicles?lon=-99.16578&lat=19.410772",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"vehicle",
+						"vehicles"
+					],
+					"query": [
+						{
+							"key": "lon",
+							"value": "-99.16578"
+						},
+						{
+							"key": "lat",
+							"value": "19.410772"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstname\":\"zizar\",\n\t\"username\": \"zizar117\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:1337/user/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vehicle Update coords",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc0b77c7-b707-494b-b5e9-012c460a9b05",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"/vehicle/coords returns a vehicle updated according to the given coordinates\",function(){",
+							"    pm.expect(pm.response).to.have.status(200);",
+							"})",
+							"",
+							"// Test Return response code 200",
+							"pm.test(\"/vehicle/vehicles Returned response code 200\",function(){",
+							"    var resultShcema  = ",
+							"    {",
+							"      \"type\": \"object\",",
+							"      \"properties\": {",
+							"        \"id\": { \"type\": \"string\" },",
+							"        \"mark\": { \"type\": \"string\" },",
+							"        \"driver_name\": { \"type\": \"string\" },",
+							"        \"car_type\": { \"type\": \"string\" },",
+							"        \"geolocation\": { \"type\": \"object\",",
+							"          \"properties\": {",
+							"            \"type\": { \"type\": \"string\" },",
+							"            \"coordinates\": {",
+							"              \"type\": \"array\",",
+							"              \"items\": [ { \"type\": \"number\" }, { \"type\": \"number\" } ]",
+							"            }",
+							"          },",
+							"          \"required\": [ \"type\", \"coordinates\" ]",
+							"        }",
+							"      },",
+							"      \"required\": [ \"id\", \"mark\", \"driver_name\", \"car_type\", \"geolocation\" ]",
+							"    };",
+							"    pm.expect(tv4.validate(pm.response.json(), resultShcema, false, true)).to.be.true;",
+							"    ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/javascript"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"5bc75404fb73a742334974f0\",\n    \"geolocation\": {\n        \"type\": \"Point\",\n        \"coordinates\" : [ \n            -99.16600, \n            19.41080\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:1337/vehicle/coords",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"vehicle",
+						"coords"
+					]
+				},
+				"description": "Updates vehicle coordinates"
+			},
+			"response": []
+		},
+		{
+			"name": "user login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "70b1d863-7705-4a90-8817-2e2dbe60da49",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"/user/login returns a succes response\",function(){",
+							"    pm.expect(pm.response).to.have.status(200);",
+							"})",
+							"",
+							"// Test Return response code 200",
+							"pm.test(\"/user/login Returned response code 200 and valid account schema\",function(){",
+							"    var resultShcema  = ",
+							"    {",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+							"  \"type\": \"object\",",
+							"  \"properties\": {",
+							"    \"user_name\": {",
+							"      \"type\": \"string\"",
+							"    },",
+							"    \"token\": {",
+							"      \"type\": \"string\"",
+							"    }",
+							"  },",
+							"  \"required\": [",
+							"    \"user_name\",",
+							"    \"token\"",
+							"  ]",
+							"};",
+							"    pm.expect(tv4.validate(pm.response.json(), resultShcema, false, true)).to.be.true;",
+							"    ",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"zizar117\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:1337/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

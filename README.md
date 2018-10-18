@@ -16,5 +16,9 @@ Features:
 
 DB:
 - Name: rtlocation in mongodb
-- Indexes:
-   2d in Vehicles and user collections
+- Indexes: Located in file indexes at '/'
+
+
+By default the application is running on port 1337
+and the connection to DB is using the default port
+and the DB name is rtlocation

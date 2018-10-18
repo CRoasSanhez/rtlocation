@@ -1,0 +1,10 @@
+# User
+--- Unique username
+db.users.createIndex({user_name: 1}, {unique: true})
+
+-- 2D sphere index to geolocation
+db.users.createIndex( { geolocation : "2dsphere" } )
+
+# Vehicles
+-- 2D sphere index to geolocation
+db.vehicles.createIndex( { geolocation : "2dsphere" } )

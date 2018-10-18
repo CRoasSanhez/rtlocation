@@ -1,0 +1,15 @@
+{
+  "name": "rtlocation",
+  "description": "Calculates user location and updates using Pusher",
+  "keywords": [
+    "getting-started",
+    "go"
+  ],
+  "website": "http://github.com/CRoasSanhez/rtlocation",
+  "repository": "http://github.com/CRoasSanhez/rtlocation",
+  "buildpacks": [
+    {
+      "url": "heroku/go"
+    }
+  ]
+}

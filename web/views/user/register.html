@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col s12 m12 center">
+        <h2>Register to Application</h2>
+    </div>
+    <div class="card col s12 m12">
+        <form id="form-register" action="/user/register" method="POST">
+            <div class="container">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <label><b>Firstname</b></label>
+                        <input id="firstname" type="text" placeholder="Enter Firstname" name="firstname" required>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <label><b>Username</b></label>
+                        <input id="username" type="text" placeholder="Enter Username" name="username" required>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <label><b>Password</b></label>
+                        <input id="password" type="password" placeholder="Enter Password" name="password" required>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <label><b>Gender</b></label>
+                        <select id="gender" class="form-resource" name="gender">
+                            <option value="1">Male</option>
+                            <option value="2">Female</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <button class="btn" type="submit">Register</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#form-register").on("submit", function () {
+            $.ajax({
+                data: { "firstname": $("#firstname").val(), "username": $("#username").val(), "password": $("#password").val() },
+                type: "post", url: "register",
+                success: function (result, stats, xhr) {
+                    if (xhr.status == 200) {
+                        sessionStorage.setItem("tkn", "Bearer " + result.token)
+                        location.href = "/vehicle/index"
+                    }
+                    else
+                        alert("Error al craer usuario")
+                }
+            });
+            return false;
+        });
+    });
+</script>

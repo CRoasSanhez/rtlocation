@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col s12 m12 center">
+        <h2>Register vehicle to Application</h2>
+    </div>
+    <div class="card col s12 m12">
+        <form id="form-register" action="/vehicle/register" method="POST">
+            <div class="container">
+                <div class="row">
+                    <div class="input-field col s12 m4">
+                        <label><b>Driver Name</b></label>
+                        <input id="driver_name" type="text" placeholder="Enter driver name" name="driver_name" required>
+                    </div>
+                    <div class="input-field col s12 m4">
+                        <label><b>Mark</b></label>
+                        <input id="mark" type="text" placeholder="Enter mark" name="mark" required>
+                    </div>
+                    <div class="input-field col s12 m4">
+                        <label><b>Car type</b></label>
+                        <input id="car_type" type="text" placeholder="Enter Car type" name="car_type" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn" type="submit">Register</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#form-register").on("submit", function () {
+            $.ajax({
+                data: {
+                    mark: $("#mark").val(),
+                    driver_name: $("#driver_name").val(),
+                    car_type: $("#car_type").val(),
+                    geolocation: { type: "Point", coordinates: [-99.16378, 19.410272] }
+                },
+                beforeSend: function (req) {
+                    console.log(req)
+                    req.setRequestHeader("Content-Type", "application/json")
+                },
+                type: "post", url: "register",
+                success: function (result, stats, xhr) {
+                    if (xhr.status == 200) {
+                        location.href = "/vehicle/index"
+                    }
+                    else
+                        alert("Error al craer usuario")
+                }
+            });
+            return false;
+        });
+    });
+</script>

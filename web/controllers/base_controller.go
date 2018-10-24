@@ -3,11 +3,12 @@ package controllers
 import(
 	"fmt"
 	"errors"
+	"encoding/json"
 
 	"github.com/go-ozzo/ozzo-validation"
+	"github.com/kataras/iris"
 
 	"rtlocation/models"
-	"encoding/json"
 	"rtlocation/core"
 	//auth "rtlocation/middleware"
 	
@@ -15,6 +16,17 @@ import(
 
 // BaseController ...
 type BaseController struct{
+}
+
+// BaseControllerHandler for base controller
+func BaseControllerHandler(api iris.Party){
+		//users.Use(myAuthMiddlewareHandler)
+
+		// http://localhost:8080/users/42/profile
+		//users.Get("/{id:uint64}/profile", userProfileHandler)
+		// http://localhost:8080/users/messages/1
+		//users.Get("/inbox/{id:uint64}", userMessageHandler)
+
 }
 
 // GetCurrentUser returns user's session
@@ -28,6 +40,42 @@ func (c *BaseController) GetCurrentUser() bool {
 	return false
 	*/
 	return true
+}
+
+// Successresponse ...
+func (c BaseController) Successresponse(data interface{},msg string)(response models.BaseResponse){
+	response.Success = true
+	response.Data = data
+	response.Message = msg
+	response.Error = nil
+	return 
+}
+
+// ErrorResponse ...
+func(c BaseController) ErrorResponse(code uint16, errMsg, msg string)(response models.BaseResponse){
+	response.Success = false
+	response.Data = nil
+	response.Message = msg
+	response.SetError(code, errMsg)
+	return 
+}
+
+// InternalErrorResponse ...
+func (c BaseController) InternalErrorResponse(errMsg string)(response models.BaseResponse){
+	response.Success = false
+	response.Data = nil
+	response.Message = "Internal server error"
+	response.SetError(400, errMsg)
+	return 
+}
+
+// BadRequest ...
+func(c BaseController)BadRequest(errMsg string)(response models.BaseResponse){
+	response.Success = false
+	response.Data = nil
+	response.Message = "Bad request"
+	response.SetError(400, errMsg)
+	return 
 }
 
 // NewNotification ...

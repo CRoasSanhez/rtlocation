@@ -15,6 +15,7 @@ import(
 
 // UserController ..
 type UserController struct{
+	BaseController
 	Ctx 		iris.Context
 	Service 	services.UserService
 	Session 	*sessions.Session
@@ -58,7 +59,7 @@ func (c *UserController) GetRegister() mvc.Result {
 
 // PostRegister handles POST: http://localhost:8080/user/register.
 // Creates User
-func (c *UserController) PostRegister()(models.Account){
+func (c *UserController) PostRegister()(models.BaseResponse){
 	var user = models.User{}
 	var password string
 	if c.Ctx.GetHeader("Content-Type") == "application/json"{
@@ -79,7 +80,7 @@ func (c *UserController) PostRegister()(models.Account){
 	newUser, err := c.Service.Create(password, user)
 	if err!=nil{
 		fmt.Printf("UC Create : Error creating user %v",err)
-		return models.Account{}
+		return c.BadRequest(err.Error())
 	}
 
 	// set the user's id to this session even if err != nil
@@ -88,15 +89,15 @@ func (c *UserController) PostRegister()(models.Account){
 	// Generate user token for JWT
 	token, err := auth.GenerateToken(newUser.ID.Hex(), core.ActionAuth)
 	if err != nil {
-		fmt.Printf("UC Create : Error creating user %s \n",err.Error())
-		return models.Account{}
+		fmt.Printf("UC Create : Error generating token %s \n",err.Error())
+		return c.InternalErrorResponse(err.Error())
 	}
 
 	var response = models.Account{
 		UserName: newUser.Username,
 		Token: token,
 	}
-	return response
+	return c.Successresponse(response,"User created")
 
 }
 
@@ -123,7 +124,7 @@ func (c *UserController) GetLogin() mvc.Result {
 
 // PostLogin handles POST: http://localhost:8080/user/register.
 // Authenticates User
-func (c *UserController) PostLogin() models.Account {
+func (c *UserController) PostLogin() models.BaseResponse {
 	
 	var user = models.User{}
 	var password string
@@ -141,14 +142,14 @@ func (c *UserController) PostLogin() models.Account {
 
 	newUser, found := c.Service.GetByUsernameAndPassword(user.Username, password)
 	if !found {
-		return models.Account{}
+		return c.BadRequest("User not found")
 	}
 
 	// Generate user token for JWT
 	token, err := auth.GenerateToken(newUser.ID.Hex(), core.ActionAuth)
 	if err != nil {
 		fmt.Printf("UC Create : Error Generating token %s \n",err.Error())
-		return models.Account{}
+		return c.InternalErrorResponse(err.Error())
 	}
 
 	c.Session.Set(userIDKey, newUser.ID.Hex())
@@ -158,7 +159,7 @@ func (c *UserController) PostLogin() models.Account {
 		Token: token,
 	}
 
-	return response
+	return c.Successresponse(response,"User found")
 }
 
 // GetCurrentUserID returns userID from session

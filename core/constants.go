@@ -23,4 +23,10 @@ var (
 
 	StatusInit = "init"
 	StatuspendingConfirmation = "pending_confirmation"
+
+	ResponseStatusSuccess = 200
+	ResponseStatusBadRequest = 400
+	ResponseStatusForbidden = 403
+	ResponseStatusNotFound = 404
+	ResponseStatusInternalServerError = 500
 )

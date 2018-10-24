@@ -17,6 +17,7 @@ import(
 
 // VehicleController ...
 type VehicleController struct{
+	BaseController
 	Ctx iris.Context
 	Service services.VehicleService
 	Session *sessions.Session
@@ -67,7 +68,7 @@ func (c *VehicleController) GetIndex() mvc.Result {
 }
 
 // GetVehicles returns a list of vehicles according to the given coordinates
-func (c *VehicleController)GetVehicles()([]models.Vehicle,error){
+func (c *VehicleController)GetVehicles()models.BaseResponse{
 	if !c.isLoggedIn(){
 		c.logout()
 	}
@@ -83,7 +84,11 @@ func (c *VehicleController)GetVehicles()([]models.Vehicle,error){
 		lat=0
 	}
 
-	return c.Service.GetNearVehicles(lon,lat)
+	vehicles, err := c.Service.GetNearVehicles(lon,lat)
+	if err != nil{
+		return c.InternalErrorResponse(err.Error())
+	}
+	return c.Successresponse(vehicles,"Vehicles Obtained")
 }
 
 // GetRegister ...
@@ -150,7 +155,7 @@ func (c *VehicleController) PostRegister() mvc.Result {
 }
 
 // PatchCoords updates vehicle coordinates
-func (c *VehicleController) PatchCoords()models.Vehicle{
+func (c *VehicleController) PatchCoords()models.BaseResponse{
 	if !c.isLoggedIn(){
 		c.logout()
 	}
@@ -161,7 +166,7 @@ func (c *VehicleController) PatchCoords()models.Vehicle{
 	uVehicle,err := c.Service.UpdateCoords(vehicle.ID.Hex(),vehicle)
 	if err !=nil{
 		fmt.Printf("Vehicle Create : Error updating vehicle %s",err.Error())
-		return models.Vehicle{}
+		return c.InternalErrorResponse(err.Error())
 	}
 
 	// Pusher 
@@ -175,7 +180,7 @@ func (c *VehicleController) PatchCoords()models.Vehicle{
 
 	client.Trigger("vehicles-cUpdate", "vehicles-eUpdate", uVehicle)
 
-	return uVehicle
+	return c.Successresponse(uVehicle,"Vehicle updated")
 }
 
 // GetCurrentUserID returns userID from session

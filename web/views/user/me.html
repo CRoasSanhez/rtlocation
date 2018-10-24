@@ -289,22 +289,27 @@
                     beforeSend: function (req) {
                         req.setRequestHeader("Authorization", sessionStorage.getItem("tkn"))
                     },
-                    url: "/vehicle/vehicles", success: function (resVehicles) {
+                    url: "/vehicle/vehicles",
+                    success: function (resp) {
+                        if (resp.success) {
+                            var resVehicles = resp.data;
+                            // add vehicles coordinates to map
+                            for (var i = 0; i < resVehicles.length; i++) {
 
-                        // add vehicles coordinates to map
-                        for (var i = 0; i < resVehicles.length; i++) {
+                                if (resVehicles[i].geolocation) {
+                                    let coords = resVehicles[i].geolocation.coordinates;
+                                    _that.addMarkerToMap(coords, map, "vehicle")
+                                    resVehicles[i].coords = { lat: coords[1], lng: coords[0] }
+                                    arrVehicles.push(resVehicles[i])
+                                }
 
-                            if (resVehicles[i].geolocation) {
-                                let coords = resVehicles[i].geolocation.coordinates;
-                                _that.addMarkerToMap(coords, map, "vehicle")
-                                resVehicles[i].coords = { lat: coords[1], lng: coords[0] }
-                                arrVehicles.push(resVehicles[i])
                             }
 
+                            // add user coordinates to map
+                            _that.addMarkerToMap([lng, lat], map, "user")
+                        } else {
+                            alert("Error obtaining near vehicles")
                         }
-
-                        // add user coordinates to map
-                        _that.addMarkerToMap([lng, lat], map, "user")
                     }
                 });
             }

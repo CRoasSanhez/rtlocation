@@ -109,6 +109,8 @@ func (r *VehicleBDRepository) GetNearVehicles(lon,lat float64)([]models.Vehicle,
 		return response,err
 	}
 
+	defer session.Close()
+
 	return response,nil
 }
 

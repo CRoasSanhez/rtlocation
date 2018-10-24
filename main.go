@@ -38,7 +38,8 @@ func main() {
 		ctx.View("shared/error.html")
 	})
 
-	//mvc.Configure(app.Party("/"), RootController)
+	// Handler for /api routes
+	//app.PartyFunc("/api", controllers.BaseControllerHandler)
 
 	// ---- Serve our controllers. ----
 	userRepo := repositories.NewUserRepository(models.User{})
@@ -58,7 +59,6 @@ func main() {
 		sessManager.Start,
 	)
 
-
 	user.Handle(new(controllers.UserController))
 
 	// Hanldes api endpoints
@@ -69,7 +69,6 @@ func main() {
 	)
 
 	vehicles.Handle(new(controllers.VehicleController))
-	
 
 	// http://localhost:1337/noexist
 	// and all controller's methods like

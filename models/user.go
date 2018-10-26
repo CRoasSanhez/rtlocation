@@ -22,6 +22,7 @@ type User struct {
 	HashedPassword 	string    	`json:"-" form:"-" bson:"hashed_password"`
 	CreatedAt      	time.Time 	`json:"created_at" form:"created_at" bson:"created_at"`
 	Geolocation 	Geo			`json:"geolocation" form:"geolocation" bson:"geolocation"`
+	Payment			Payment		`json:"-" form:"-" bson:"payment"`
 }
 
 // GetDocumentName returns the DB collection name

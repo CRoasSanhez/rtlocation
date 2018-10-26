@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="col s12 m12 center">
+        <h2>Payments</h2>
+    </div>
+    <div class="card col s12 m12">
+        <form id="form-register" action="/payment/register" method="POST">
+            <div class="container">
+                <div class="row">
+                    <div class="input-field col s12 m12">
+                        <select id="type" class="form-resource" name="type">
+                            <option value="creadit_card">Credit Card</option>
+                            <option value="debit_card">Debit Card</option>
+                        </select>
+                        <label><b>Payment type</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <label><b>Card Number</b></label>
+                        <input id="card_number" type="text" placeholder="Card Number" name="card_number" maxlength="16"
+                            required>
+                    </div>
+                    <div class="input-field col s6 m3">
+                        <label><b>CVV</b></label>
+                        <input id="cvv" type="text" placeholder="cvv" name="cvv" maxlength="3" required>
+                    </div>
+                    <div class="input-field col s6 m3">
+                        <label><b>Exp. Date</b></label>
+                        <input type="text" class="datepicker" required>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+
+                <div class="row">
+                    <button class="btn" type="submit">Register</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            format: "mm/yy",
+        });
+        $('select').formSelect();
+
+        $("#form-register").on("submit", function () {
+            $.ajax({
+                data: {
+                    "payment_type": $("#type").val(),
+                    "card_number": $("#card_number").val(),
+                    "cvv": $("#cvv").val(),
+                    "end_date": $("#exp_date").val(),
+                },
+                type: "post", url: "/payment/register",
+                success: function (result, stats, xhr) {
+                    if (xhr.status == 200) {
+                        sessionStorage.setItem("tkn", "Bearer " + result.token)
+                        location.href = "/user/me"
+                    }
+                    else
+                        alert("Error al craer usuario")
+                }
+            });
+            return false;
+        });
+    });
+</script>

@@ -48,11 +48,16 @@ func main() {
 	vehicleRepo := repositories.NewVehicleRepository()
 	vehicleService := services.NewVehicleService(vehicleRepo)
 
-	// "/user" based mvc application.
+	paymentRepo := repositories.NewPaymentRepository(models.Payment{})
+	paymentService := services.NewPaymentService(paymentRepo)
+
+
 	sessManager := sessions.New(sessions.Config{
 		Cookie:  "sessioncookiename",
 		Expires: 24 * time.Hour,
 	})
+
+	// "/user" based mvc application.
 	user := mvc.New(app.Party("/user"))
 	user.Register(
 		userService,
@@ -61,7 +66,7 @@ func main() {
 
 	user.Handle(new(controllers.UserController))
 
-	// Hanldes api endpoints
+	// Hanldes /vehicle endpoints
 	vehicles := mvc.New(app.Party("/vehicle"))
 	vehicles.Register(
 		vehicleService,
@@ -69,6 +74,16 @@ func main() {
 	)
 
 	vehicles.Handle(new(controllers.VehicleController))
+
+	// Hanldes /payment endpoints
+	payments := mvc.New(app.Party("/payment"))
+	payments.Register(
+		paymentService,
+		sessManager.Start,
+	)
+
+	payments.Handle(new(controllers.PaymentController))
+
 
 	// http://localhost:1337/noexist
 	// and all controller's methods like

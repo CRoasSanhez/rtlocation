@@ -22,7 +22,9 @@ var (
 	Bearer       = "Bearer "
 
 	StatusInit = "init"
+	StatusActive = "active"
 	StatuspendingConfirmation = "pending_confirmation"
+	StatusDeleted = "deleted"
 
 	ResponseStatusSuccess = 200
 	ResponseStatusBadRequest = 400

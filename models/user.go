@@ -1,7 +1,6 @@
 package models
 
 import(
-	"time"
 	"errors"
 
 	"github.com/globalsign/mgo/bson"
@@ -10,7 +9,7 @@ import(
 
 // User ..
 type User struct {
-	DocumentInterface `json:"-" bson:"-"`
+	DocumentBase `json:",inline" bson:",inline"`
 	
 	ID				bson.ObjectId `json:"id" form:"id" bson:"id"`
 	Firstname      	string    	`json:"firstname" form:"firstname" bson:"first_name"`
@@ -20,8 +19,8 @@ type User struct {
 	Device			Device		`json:"-" form:"-" bson:"device"`
 	Password 		string		`json:"password" form:"password" bson:"-"`
 	HashedPassword 	string    	`json:"-" form:"-" bson:"hashed_password"`
-	CreatedAt      	time.Time 	`json:"created_at" form:"created_at" bson:"created_at"`
 	Geolocation 	Geo			`json:"geolocation" form:"geolocation" bson:"geolocation"`
+	ProfilePicture	Attachment	`json:"profile_picture" form:"profile_picture" bson:"profile_picture"`
 	Payment			Payment		`json:"-" form:"-" bson:"payment"`
 }
 

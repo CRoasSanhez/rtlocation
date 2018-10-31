@@ -2,6 +2,7 @@ package controllers
 
 import(
 	"fmt"
+	"io/ioutil"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
@@ -192,6 +193,56 @@ func (c *UserController) GetMe() mvc.Result {
 			"userLon": u.Geolocation.Coordinates[0],
 		},
 	}
+}
+
+// PostPicture updates user profile picture
+func (c *UserController) PostPicture()models.BaseResponse{
+
+	if !c.isLoggedIn(){
+		c.logout()
+	}
+	
+	// Get the max post value size passed via iris.WithPostMaxMemory.
+	maxSize := c.Ctx.Application().ConfigurationReadOnly().GetPostMaxMemory()
+
+	err := c.Ctx.Request().ParseMultipartForm(maxSize)
+	if err != nil {
+		return c.BadRequest(err.Error())
+	}
+
+	_, fileHeader, errF := c.Ctx.FormFile("picture")
+	if errF!=nil{
+		return c.BadRequest(err.Error())
+	}
+
+	_, ok := c.Service.SaveProfilePicture(fileHeader, c.CurrentUser)
+	if !ok {
+		return c.InternalErrorResponse("Error updating User profile")
+	}
+
+	return c.Successresponse("Success","File uploaded")
+}
+
+// GetPicture returns user profile picture
+func (c *UserController) GetPicture()models.BaseResponse{
+	if !c.isLoggedIn(){
+		c.logout()
+	}
+
+	var id = c.CurrentUser.ID.Hex()
+
+	var path = "/tmp/" + id + ".png"
+
+	fmt.Println(c.CurrentUser.ProfilePicture.Binary)
+
+	if err := ioutil.WriteFile(path, c.CurrentUser.ProfilePicture.Binary, 0644); err != nil {
+		return c.InternalErrorResponse(err.Error())
+	}
+
+	c.Ctx.SendFile(path,"profile_picture")
+
+	return c.Successresponse("success","File downloaded")
+
 }
 
 /*

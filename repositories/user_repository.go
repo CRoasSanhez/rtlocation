@@ -2,6 +2,7 @@ package repositories
 
 import(
 	"fmt"
+	"mime/multipart"
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
@@ -15,6 +16,7 @@ type UserRepository interface{
 	Insert(*models.User)error
 	GetByID(bson.ObjectId)(models.User,error)
 	GetByUsername(username, pwd string)(models.User,error)
+	SaveProfilePicture(file *multipart.FileHeader, owner models.User)(error)
 }
 
 // NewUserRepository returns a new user repository,
@@ -87,4 +89,39 @@ func (r *UserBDRepository) GetByUsername(username, pwd string)(models.User,error
 	defer session.Close()
 
 	return user, nil
+}
+
+// SaveProfilePicture ...
+func (r *UserBDRepository)SaveProfilePicture(filePart *multipart.FileHeader, user models.User)error{
+	var att = models.Attachment{}
+
+	var owner = models.AsDocumentBase(&user)
+	if errInit := att.Init(owner,filePart); errInit!=nil{
+		fmt.Printf("Error initializing attachment: %s \n",errInit.Error())
+		return errInit
+	}
+
+	found,errF := r.GetByID(owner.GetID())
+	if errF!=nil{
+		fmt.Printf("Error User to update: %s \n",errF.Error())
+		return errF
+	}
+
+	found.ProfilePicture = att
+
+	session ,err:= mgo.Dial(core.DBUrl)
+	if err!=nil{
+		fmt.Printf("Update: Error getting session %s\n",core.DBUrl)
+		return err
+	}
+	
+	_, err = session.DB(core.DBName).C(found.GetDocumentName()).UpsertId(found.ID, found)
+	if err != nil{
+		fmt.Printf("Update: Error update %s\n",err)
+		return err
+	}
+
+	defer session.Close()
+
+	return nil
 }

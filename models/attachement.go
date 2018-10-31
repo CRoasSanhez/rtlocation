@@ -17,18 +17,19 @@ import (
 
 // Attachment model
 type Attachment struct {
-	ACL            string                `bson:"acl"`
-	Action         string                `bson:"action"`
-	CurrentName    string                `bson:"current_name"`
-	Format         string                `bson:"format"`
-	OriginalName   string                `bson:"original_name"`
-	PATH           string                `bson:"path"`
-	Signing        string                `bson:"signing"`
-	SigningTime    time.Time             `bson:"signing_time"`
-	SigningMinutes int                   `bson:"signing_minutes"`
-	Size           int64                 `bson:"size"`
-	URL            string                `bson:"file_url"`
-	Dimensions     map[string]Attachment `bson:"dimensions"`
+	ACL           	string                	`bson:"acl"`
+	Action         	string                	`bson:"action"`
+	CurrentName    	string                	`bson:"current_name"`
+	Format         	string                	`bson:"format"`
+	OriginalName   	string               	`bson:"original_name"`
+	PATH           	string               	`bson:"path"`
+	Signing        	string                	`bson:"signing"`
+	SigningTime    	time.Time             	`bson:"signing_time"`
+	SigningMinutes 	int                   	`bson:"signing_minutes"`
+	Size           	int64                 	`bson:"size"`
+	URL            	string                	`bson:"file_url"`
+	Dimensions     	map[string]Attachment 	`bson:"dimensions"`
+	Binary		   	[]byte					`bson:"binary"`
 
 	// Not saved fields
 	TMPFile *multipart.FileHeader `bson:"-"`
@@ -63,6 +64,16 @@ func (m *Attachment) Init(owner DocumentInterface, part *multipart.FileHeader) e
 	m.OriginalName = part.Filename
 	m.PATH = model + "/" + id + "/" + action + "/" + m.CurrentName
 	m.Size, _ = file.Seek(io.SeekStart, io.SeekEnd)
+
+	// Set binary data of image to save on DB
+	if pos := core.FindOnArray([]string{"jpg","png","jpeg"},suffix); pos>0{
+		buf := bytes.NewBuffer(nil)
+		_,err = io.Copy(buf,file)
+		if err != nil{
+			return err
+		}
+		m.Binary = buf.Bytes()
+	}
 
 	return nil
 }

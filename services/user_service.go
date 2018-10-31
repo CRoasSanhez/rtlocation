@@ -1,6 +1,7 @@
 package services
 
 import (
+	"mime/multipart"
 	"errors"
 	"fmt"
 
@@ -17,6 +18,7 @@ type UserService interface{
 	Create(string,models.User)(models.User,error)
 	GetByID(string)(models.User,bool)
 	GetByUsernameAndPassword(username,pwd string)(models.User,bool)
+	SaveProfilePicture(file *multipart.FileHeader, owner models.User)(models.User,bool)
 }
 
 // NewUserService returns the default user service.
@@ -93,4 +95,11 @@ func (s *mUserService)GetByUsernameAndPassword(username,pwd string)(models.User,
 	}
 	
 	return user,true
+}
+
+// SaveProfilePicture ...
+func (s *mUserService)SaveProfilePicture(file *multipart.FileHeader,owner models.User)(models.User,bool){
+
+	s.repo.SaveProfilePicture(file, owner)
+	return models.User{},true
 }

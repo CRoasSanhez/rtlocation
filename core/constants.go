@@ -1,10 +1,12 @@
 package core
 
 // DBName is the Database name
-var DBName = "rtlocation"
-var (
+const (
 	ActionAuth      = "auth"
+	DBName = "rtlocation"
 	DBUrl = "mongodb://127.0.0.1:27017/"+DBName
+
+	DefaultSigningTime    = 1440 // time in minutes ~ 1 day
 
 	PusherAppID = "622037"
 	PusherKey = "f8a8b497e58a374fd8d6"

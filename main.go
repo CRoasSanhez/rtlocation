@@ -3,6 +3,8 @@ package main
 import (
 	"time"
 	"fmt"
+	//"os"
+	"path/filepath"
 
 	"github.com/kataras/iris"
 
@@ -15,6 +17,7 @@ import (
 	"rtlocation/services"
 	"rtlocation/models"
 	"rtlocation/core"
+	"rtlocation/middleware"
 )
 
 func main() {
@@ -37,6 +40,13 @@ func main() {
 			GetStringDefault("message", "The page you're looking for doesn't exist"))
 		ctx.View("shared/error.html")
 	})
+
+	//dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir, err := filepath.Abs("./")
+    if err != nil {
+            fmt.Printf("Error finding OS base path: %s \n",err.Error())
+    }
+	middleware.SetBasePath(dir)
 
 	// Handler for /api routes
 	//app.PartyFunc("/api", controllers.BaseControllerHandler)

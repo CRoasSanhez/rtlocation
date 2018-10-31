@@ -3,7 +3,8 @@ package models
 import (
 	"time"
 
-"github.com/globalsign/mgo/bson")
+	"github.com/globalsign/mgo/bson"
+)
 
 // DocumentInterface Used for common document actions
 type DocumentInterface interface {
@@ -14,13 +15,12 @@ type DocumentInterface interface {
 	Init()
 	GetID() bson.ObjectId
 	GetDocumentName() string
-	GetTimeFormat() string
 	SetDocument(doc DocumentInterface)
 }
 
 // DocumentBase ...
 type DocumentBase struct {
-	document DocumentInterface
+	document DocumentInterface 
 
 	ID        bson.ObjectId `json:"-" bson:"_id,omitempty"`
 	CreatedAt time.Time     `json:"-" bson:"created_at"`
@@ -48,6 +48,11 @@ func (d *DocumentBase) Before() {
 
 }
 
+func (d *DocumentBase)Update(){
+	
+} // Update is calling before document is updated
+
+
 // GetID ...
 func (d *DocumentBase) GetID() bson.ObjectId {
 	return d.ID
@@ -61,4 +66,8 @@ func (d *DocumentBase) GetDocumentName() string {
 // SetDocument ...
 func (d *DocumentBase) SetDocument(doc DocumentInterface) {
 	d.document = doc
+}
+
+func AsDocumentBase(document interface{}) DocumentInterface {
+	return document.(DocumentInterface)
 }

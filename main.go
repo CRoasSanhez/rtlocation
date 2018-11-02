@@ -55,6 +55,9 @@ func main() {
 	userRepo := repositories.NewUserRepository(models.User{})
 	userService := services.NewUserService(userRepo)
 
+	usersRepo := repositories.NewUsersRepository()
+	usersService := services.NewUsersService(usersRepo)
+
 	vehicleRepo := repositories.NewVehicleRepository()
 	vehicleService := services.NewVehicleService(vehicleRepo)
 
@@ -67,7 +70,7 @@ func main() {
 		Expires: 24 * time.Hour,
 	})
 
-	// "/user" based mvc application.
+	// Handles "/user" endpoints.
 	user := mvc.New(app.Party("/user"))
 	user.Register(
 		userService,
@@ -75,6 +78,15 @@ func main() {
 	)
 
 	user.Handle(new(controllers.UserController))
+
+	// Handles /users endpoints
+	users:= mvc.New(app.Party("/users"))
+	users.Register(
+		usersService,
+		sessManager.Start,
+	)
+
+	users.Handle(new(controllers.UsersController))
 
 	// Hanldes /vehicle endpoints
 	vehicles := mvc.New(app.Party("/vehicle"))

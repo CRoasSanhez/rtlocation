@@ -60,7 +60,7 @@ func(c *PaymentController)PostRegister()models.BaseResponse{
 	c.Ctx.ReadJSON(&payment)
 
 	c.Service.AddPayment(c.CurrentUser.ID.Hex(), payment)
-	return c.Successresponse(nil,"Payment added successfully")
+	return c.Successresponse(nil,"Payment added successfully",nil)
 }
 
 // DeletePayment ...
@@ -73,7 +73,7 @@ func (c *PaymentController)DeletePayment()models.BaseResponse{
 	c.Ctx.ReadJSON(&payment)
 
 	c.Service.AddPayment(c.CurrentUser.ID.Hex(), payment)
-	return c.Successresponse(nil,"Payment added successfully")
+	return c.Successresponse(nil,"Payment added successfully",nil)
 }
 
 

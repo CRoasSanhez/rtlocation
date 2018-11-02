@@ -10,6 +10,7 @@ import(
 
 	"rtlocation/models"
 	"rtlocation/core"
+	"rtlocation/models/serializers"
 	//auth "rtlocation/middleware"
 	
 )
@@ -43,11 +44,16 @@ func (c *BaseController) GetCurrentUser() bool {
 }
 
 // Successresponse ...
-func (c BaseController) Successresponse(data interface{},msg string)(response models.BaseResponse){
+func (c BaseController) Successresponse(data interface{},msg string, serializer serializers.SerializerInterface)(response models.BaseResponse){
 	response.Success = true
-	response.Data = data
 	response.Message = msg
 	response.Error = nil
+	if serializer != nil{
+		response.Data = serializers.NewSerializer(data,serializer).Cast(nil)
+	}else{
+		response.Data = data
+	}
+
 	return 
 }
 
@@ -75,6 +81,15 @@ func(c BaseController)BadRequest(errMsg string)(response models.BaseResponse){
 	response.Data = nil
 	response.Message = "Bad request"
 	response.SetError(400, errMsg)
+	return 
+}
+
+// ForbiddenResponse ...
+func (c BaseController)ForbiddenResponse()(response models.BaseResponse){
+	response.Success = false
+	response.Data = nil
+	response.Message = "Invalid User"
+	response.SetError(403, response.Message)
 	return 
 }
 

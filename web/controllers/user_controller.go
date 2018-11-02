@@ -12,6 +12,7 @@ import(
 	"rtlocation/services"
 	"rtlocation/models"
 	"rtlocation/core"
+	"rtlocation/models/serializers"
 )
 
 // UserController ..
@@ -98,7 +99,7 @@ func (c *UserController) PostRegister()(models.BaseResponse){
 		UserName: newUser.Username,
 		Token: token,
 	}
-	return c.Successresponse(response,"User created")
+	return c.Successresponse(response,"User created",nil)
 
 }
 
@@ -160,7 +161,7 @@ func (c *UserController) PostLogin() models.BaseResponse {
 		Token: token,
 	}
 
-	return c.Successresponse(response,"User found")
+	return c.Successresponse(response,"User found",nil)
 }
 
 // GetCurrentUserID returns userID from session
@@ -195,6 +196,14 @@ func (c *UserController) GetMe() mvc.Result {
 	}
 }
 
+// GetProfile returns user profile
+func (c *UserController) GetProfile()models.BaseResponse{
+	if !c.isLoggedIn() {
+		return c.ForbiddenResponse()
+	}
+	return c.Successresponse(c.CurrentUser,"success",serializers.UserSerializer{})
+}
+
 // PostPicture updates user profile picture
 func (c *UserController) PostPicture()models.BaseResponse{
 
@@ -220,7 +229,7 @@ func (c *UserController) PostPicture()models.BaseResponse{
 		return c.InternalErrorResponse("Error updating User profile")
 	}
 
-	return c.Successresponse("Success","File uploaded")
+	return c.Successresponse("Success","File uploaded",nil)
 }
 
 // GetPicture returns user profile picture
@@ -241,7 +250,7 @@ func (c *UserController) GetPicture()models.BaseResponse{
 
 	c.Ctx.SendFile(path,"profile_picture")
 
-	return c.Successresponse("success","File downloaded")
+	return c.Successresponse("success","File downloaded",nil)
 
 }
 

@@ -35,6 +35,7 @@ func (r *UserBDRepository) Insert(user *models.User)error{
 	if len(user.ID) == 0 {
 		user.ID = bson.NewObjectId()
 	}
+	user.Status = core.StatusInit
 	
 	session ,err:= mgo.Dial(core.DBUrl)
 	if err!=nil{

@@ -88,7 +88,7 @@ func (c *VehicleController)GetVehicles()models.BaseResponse{
 	if err != nil{
 		return c.InternalErrorResponse(err.Error())
 	}
-	return c.Successresponse(vehicles,"Vehicles Obtained")
+	return c.Successresponse(vehicles,"Vehicles Obtained",nil)
 }
 
 // GetRegister ...
@@ -180,7 +180,7 @@ func (c *VehicleController) PatchCoords()models.BaseResponse{
 
 	client.Trigger("vehicles-cUpdate", "vehicles-eUpdate", uVehicle)
 
-	return c.Successresponse(uVehicle,"Vehicle updated")
+	return c.Successresponse(uVehicle,"Vehicle updated",nil)
 }
 
 // GetCurrentUserID returns userID from session
